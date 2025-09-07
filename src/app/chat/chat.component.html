@@ -1,0 +1,99 @@
+   <div class="chat-container">
+      <div class="chat-header">
+        <h2>Chat en temps réel</h2>
+        <div class="connection-status">
+          @if (chatService.isConnected()) {
+            <span class="status connected">
+              <span class="status-dot"></span>
+              Connecté ({{ numberOfMessages }} messages)
+            </span>
+          } @else {
+            <span class="status disconnected">
+              <span class="status-dot"></span>
+              Déconnecté
+            </span>
+          }
+        </div>
+      </div>
+
+          @if (!chatService.isConnected()) {
+        <div class="connection-form">
+          <div class="form-group">
+            <label for="username">Nom d'utilisateur:</label>
+            <input 
+              id="username"
+              type="text" 
+              [(ngModel)]="username"
+              placeholder="Entrez votre nom..."
+              class="username-input"
+            />
+            <button 
+              (click)="connect()" 
+              [disabled]="!username"
+              class="connect-btn"
+            >
+              Se connecter
+            </button>
+          </div>
+        </div>
+      }
+
+    @if (chatService.isConnected()) {
+        <div class="chat-content">
+          <div class="messages-container" #messagesContainer>
+            <div class="messages">
+              @if (messages.length === 0) {
+                <div class="no-messages">
+                  <p>Aucun message pour le moment. Soyez le premier à écrire !</p>
+                </div>
+              }
+              
+              @for (message of messages; track message.timestamp) {
+                <div class="message" [ngClass]="getMessageClass(message)">
+                  <div class="message-header">
+                    <span class="sender">{{ message.sender }}</span>
+                    <span class="timestamp">
+                      {{ formatTime(message.timestamp) }}
+                    </span>
+                  </div>
+                  <div class="message-content">
+                    {{ message.content }}
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="message-input-container">
+            <div class="input-group">
+              <input 
+                type="text" 
+                [(ngModel)]="message"
+                placeholder="Tapez votre message..."
+                class="message-input"
+                #messageInput
+              />
+              <button 
+                (click)="sendMessage()" 
+                [disabled]="!message.trim()"
+                class="send-btn"
+              >
+                Envoyer
+              </button>
+            </div>
+          </div>
+
+          <div class="chat-actions">
+            <!-- <button (click)="clearMessages()" [disabled]="messages.length==0" class="clear-btn">
+              Effacer les messages
+            </button> -->
+            <button (click)="disconnect()" class="disconnect-btn">
+              Se déconnecter
+            </button>
+          </div>
+        </div>
+      }
+      
+    </div> 
+
+     
